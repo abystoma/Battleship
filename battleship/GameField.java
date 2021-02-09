@@ -4,14 +4,26 @@ import java.util.*;
 
 
 public class GameField {
-    private Scanner sc = new Scanner(System.in);
-    private String[][] boardField = new String[11][11];
+    protected Scanner sc = new Scanner(System.in);
+    protected String[][] boardField;
+    protected Input input;
+    protected int player;
 
+    public GameField(int player) {
+        this.boardField = new String[11][11];
+        this.input = null;
+        this.player = player;
+    }
+    public String callPlayer() {
+        return String.format("Player %d, place your ships on the game field", this.player);
+    }
+    public int getPlayer(int n) {
+        return this.player;
+    }
     public void play() {
         // Write your code here
         printField();
 
-        Input input = null;
         for (Arsenal status : Arsenal.values()) {
             switch (status) {
                 case AIRCRAFT:
@@ -40,7 +52,7 @@ public class GameField {
     public void prompt(Input input, Arsenal status) {
         boolean check = false;
         while (!check) {
-            System.out.println(String.format("Enter the coordinates of the %s (%d cells): ",status.getName(), status.getSize()));
+            System.out.println(String.format("Enter the coordinates of the %s (%d cells): %n",status.getName(), status.getSize()));
 
             input = getCoordinates();
           
@@ -58,7 +70,7 @@ public class GameField {
             } else if (input.startX == input.endX){
 
                 if (Math.max(input.startY - 65 + 1, input.endY - 65 + 1) - Math.min(input.startY - 65 + 1, input.endY - 65 + 1) + 1 != status.getSize()) {
-                    System.out.println(String.format("Error! Wrong length of the %s! Try again: ", status.getName()));
+                    System.out.println(String.format("Error! Wrong length of the %s! Try again: %n", status.getName()));
                     continue;
                 }  
                 boolean close = isTooClose(boardField, input.startY - 65 + 1, input.startX, input.endY - 65 + 1, input.endX); 
@@ -66,7 +78,7 @@ public class GameField {
                     continue;
                 }           
             } else {
-                System.out.println("Error! Wrong ship location! Try again: ");
+                System.out.println("Error! Wrong ship location! Try again: \n");
                 continue;
             }
 
@@ -114,11 +126,18 @@ public class GameField {
                 }
             }        
         } else if (input.startX == input.endX) {
-            for (int i = input.startY; i <= input.endY; i++) {
-                boardField[i - 65 + 1][input.startX] = "O ";
+            if (input.startY > input.endY) {
+                for (int i = input.endY; i <= input.startY; i++) {
+                    boardField[i - 65 + 1][input.startX] = "O ";
+                }
+            } else {
+                for (int i = input.startY; i <= input.endY; i++) {
+                    boardField[i - 65 + 1][input.startX] = "O ";
+                }
             }
         }
     }
+
     public boolean isTooClose(String[][] board, int startY, int startX, int endY, int endX) {
         // check that the new position is not next to any ship already set
 
@@ -159,7 +178,7 @@ public class GameField {
         for (int i = upsideRow; i <= undersideRow; i++) {
             for (int j = leftSideColumn; j <= rightSideColumn; j++) {
                 if (board[i][j].equals("O ")) {
-                    System.out.println("Error! You placed it too close to another one. Try again: ");
+                    System.out.println("Error! You placed it too close to another one. Try again: \n");
                     return true;
                 }
             }
@@ -186,11 +205,24 @@ public class GameField {
     }
 
     public void printField() {
+        System.out.println();
         for (int i = 0; i <= 10; i++) {
             for (int j = 0; j <= 10; j++) {
                 System.out.print(boardField[i][j]);
             }
             System.out.println();
         }
+    System.out.println();
     }
+
+    public void launchAttack() {
+    
+    }
+    public void fogOfWar() {
+
+               
+    }
+
+
+
 }
